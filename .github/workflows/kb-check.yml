@@ -1,0 +1,21 @@
+name: kb-check
+on:
+  pull_request:
+  push:
+    branches: ["**"]
+  schedule:
+    - cron: "0 18 * * *"   # 毎日 03:00 JST
+  workflow_dispatch:
+jobs:
+  kb-check:
+    name: kb-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: selftest（検査に誤りを注入して全部鳴るか）
+        run: python tools/selftest.py
+      - name: lint（本番の検査）
+        run: python tools/kb_lint.py kb
